@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 
-// Program.cs
+// MEF Specific initialization
 var assemblies = Directory.EnumerateFiles(AppDomain.CurrentDomain.BaseDirectory, "back.Component.*.dll")
     .Select(Assembly.LoadFrom)
     .ToList();
@@ -22,7 +22,6 @@ using var container = config.CreateContainer();
 var components = container.GetExports<IMachineComponent>();
 
 builder.Services.AddSingleton<IEnumerable<IMachineComponent>>(components.ToList());
-
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
