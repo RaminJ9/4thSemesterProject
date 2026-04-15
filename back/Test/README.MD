@@ -17,10 +17,10 @@ Right click project (eg. 'Example' in this example)
 Click Add -> Add project refference
 In GUI, Add Common (not any others)
 
-## Using Common interfaces
+## Using Common interfaces/classes
 When making your machine class, add this on the line above your class
 ```C#
-[Export(typeof(IMachineComponent))]
+[Export(typeof(MachineComponentBase))]
 public class AGV
 ```
 
