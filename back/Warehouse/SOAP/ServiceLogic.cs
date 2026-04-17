@@ -11,6 +11,10 @@ namespace WarehouseService;
         /// <param name="clientCredentials">The client credentials</param>
         static partial void ConfigureEndpoint(System.ServiceModel.Description.ServiceEndpoint serviceEndpoint, System.ServiceModel.Description.ClientCredentials clientCredentials);
         
+
+        // CONSTRUCTORS ---------------------------------------------------------------------------------------------------------
+
+
         public EmulatorServiceClient() : 
                 base(EmulatorServiceClient.GetDefaultBinding(), EmulatorServiceClient.GetDefaultEndpointAddress())
         {
@@ -43,6 +47,9 @@ namespace WarehouseService;
                 base(binding, remoteAddress)
         {
         }
+
+
+        // FUNCTIONALITY ----------------------------------------------------------------------
         
         public System.Threading.Tasks.Task<string> PickItemAsync(int trayId)
         {
@@ -58,6 +65,11 @@ namespace WarehouseService;
         {
             return base.Channel.GetInventoryAsync();
         }
+
+
+
+        //CONNECTION -------------------------------------------------------------------------------
+
         
         public virtual System.Threading.Tasks.Task OpenAsync()
         {
