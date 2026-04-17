@@ -15,7 +15,7 @@ namespace WarehouseService;
         // CONSTRUCTORS ---------------------------------------------------------------------------------------------------------
 
 
-        public EmulatorServiceClient() : 
+        public EmulatorServiceClient() : //We will probably just use this one 
                 base(EmulatorServiceClient.GetDefaultBinding(), EmulatorServiceClient.GetDefaultEndpointAddress())
         {
             this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_IEmulatorService.ToString();
@@ -51,6 +51,7 @@ namespace WarehouseService;
 
         // FUNCTIONALITY ----------------------------------------------------------------------
         
+        //The actual methods we will be calling
         public System.Threading.Tasks.Task<string> PickItemAsync(int trayId)
         {
             return base.Channel.PickItemAsync(trayId);
@@ -71,15 +72,19 @@ namespace WarehouseService;
         //CONNECTION -------------------------------------------------------------------------------
 
         
-        public virtual System.Threading.Tasks.Task OpenAsync()
+        public virtual System.Threading.Tasks.Task OpenAsync() //Start connection
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginOpen(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndOpen));
         }
         
-        public virtual System.Threading.Tasks.Task CloseAsync()
+        public virtual System.Threading.Tasks.Task CloseAsync() //Close connection
         {
             return System.Threading.Tasks.Task.Factory.FromAsync(((System.ServiceModel.ICommunicationObject)(this)).BeginClose(null, null), new System.Action<System.IAsyncResult>(((System.ServiceModel.ICommunicationObject)(this)).EndClose));
         }
+
+
+
+        //IGNORE FOR NOW / used by constructors
         
         private static System.ServiceModel.Channels.Binding GetBindingForEndpoint(EndpointConfiguration endpointConfiguration)
         {
