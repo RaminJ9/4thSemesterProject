@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace WarehouseService
 {
-    public class SOAP
+    public class Connection
     {
-        public SOAP()
+        public Connection()
         {
         }
 

@@ -9,7 +9,7 @@ public class Program
         public static async Task Main(string[] args)
         {
 
-            SOAP conn = new SOAP();
+            Connection conn = new Connection();
 
             await conn.RunExample();
 
