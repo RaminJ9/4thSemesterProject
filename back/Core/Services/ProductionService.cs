@@ -65,7 +65,7 @@ namespace Core.Services
                         if (i != 0) await machine.Receive(tray);
 
                         // Last machine shoulndt provide tray further
-                        if (i != machines.Count - 1) continue;
+                        if (i == production.Count - 1) continue;
                         tray = await machine.Provide(tray);
                     }
                 } catch (Exception ex)
@@ -102,10 +102,14 @@ namespace Core.Services
         {
             return production;
         }
+        public List<MachineComponentBase> GetMachines()
+        {
+            return machines;
+        }
         public void AddMachine(MachineComponentBase machine)
         {
             // Check for duplicates
-            if (machines.Any(m => m.Guid == machine.Guid))
+            if (machines.Any(m => m.Guid == machine.Guid || m.ConnectionString == machine.ConnectionString))
             {
                 throw new DuplicateMachineException(machine);
             }
