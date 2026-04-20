@@ -10,6 +10,14 @@ namespace Warehouse
     {
         public Warehouse(string guid, string name, string connectionString) : base(guid, name, connectionString)
         {
+            try
+            {
+                Connection connection = new Connection();
+            }
+            catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         public override Task<Tray?> Provide(Tray tray)
