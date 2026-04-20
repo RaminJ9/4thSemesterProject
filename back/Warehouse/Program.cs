@@ -13,10 +13,10 @@ public class Program
         {
 
             Warehouse wh = new Warehouse("1", "wh1", "http://localhost:8081/Service.asmx");
-            Tray tray = new Tray(0, "Parts");
+            Tray tray = new Tray(0, "Item");
 
-            var s = wh.Provide(tray);
-            Console.WriteLine(s);
+            var s = await wh.Provide(tray);
+            
         }
     }
 }

@@ -28,17 +28,42 @@ namespace Warehouse
         public override async Task<Tray?> Provide(Tray tray) //Provides a tray of parts
         {
             var json = await this.GetWarehouseInventory();
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory");
+            }
             var doc = JsonDocument.Parse(json);
 
+            
             // Get the inventory object (first element of the array)
-            var inventory = doc.RootElement.GetProperty("Inventory")[0];
-
+            var inventory = doc.RootElement.GetProperty("Inventory");
+            
             // Iterate over tray slots
-            foreach (var item in inventory.EnumerateObject())
+            try
             {
-                Console.WriteLine($"Tray {item.Name}: {item.Value.GetString()}");
+                Console.WriteLine(inventory.ToString());
+                if (inventory.GetArrayLength()==0)
+                {
+                    throw new Exception($"Warehouse: {Guid} Inventory is empty"); // If warehouse is empty.
+                }
+                foreach (var item in inventory.EnumerateArray())
+                {
+                    Console.WriteLine(item);
+                    if (item.GetProperty("Content").GetString().Contains(tray.Name)) // this needs to be changed to parts, after testing.
+                    {
+                        Tray returnTray = new Tray(item.GetProperty("Id").GetInt32(), tray.Name);
+                        await this.GetConnection().GetService().PickItemAsync(returnTray.Id);
+                        return returnTray;
+                    }
+                    
+                }
             }
-            //GetConnection().GetService().PickItemAsync(tray_id);
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+             
+            throw new Exception($"No parts in Warehouse : {Guid}"); // if no parts in Warehare.
         }
 
         public override Task<Tray?> Receive(Tray tray) //Ignore ID, use name to figure out if providing Drone or Parts
@@ -56,6 +81,7 @@ namespace Warehouse
             var s = await this.GetConnection().GetService().GetInventoryAsync();
             return s.ToString();
         }
+        
 
     }
     
