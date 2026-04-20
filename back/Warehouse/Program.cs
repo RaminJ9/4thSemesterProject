@@ -1,3 +1,4 @@
+using System.Security.Cryptography.X509Certificates;
 using WarehouseService;
 
 namespace Warehouse;
@@ -6,15 +7,14 @@ public class Program
 {
     public class program
     {
+        
         public static async Task Main(string[] args)
         {
 
-            Connection conn = new Connection();
+            Warehouse wh = new Warehouse("1", "wh1", "http://localhost:8081/Service.asmx");
 
-            await conn.RunExample();
-
-            Console.WriteLine("Testing");
-
+            var s = wh.GetConnection().GetService().GetInventoryAsync();
+            Console.WriteLine(s);
         }
     }
 }

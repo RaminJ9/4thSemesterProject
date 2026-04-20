@@ -8,11 +8,12 @@ namespace Warehouse
     [Export(typeof(MachineComponentBase))]
     public class Warehouse : MachineComponentBase
     {
+        private Connection connection;
         public Warehouse(string guid, string name, string connectionString) : base(guid, name, connectionString)
         {
             try
             {
-                Connection connection = new Connection();
+                connection = new Connection(connectionString);
             }
             catch(Exception e)
             {
@@ -30,6 +31,10 @@ namespace Warehouse
             throw new NotImplementedException();
         }
         
+        public Connection GetConnection()
+        {
+            return connection;
+        }
         
     }
     

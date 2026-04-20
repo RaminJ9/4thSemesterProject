@@ -15,7 +15,7 @@ namespace WarehouseService;
         // CONSTRUCTORS ---------------------------------------------------------------------------------------------------------
 
 
-        public EmulatorServiceClient() : //We will probably just use this one 
+        public EmulatorServiceClient() : 
                 base(EmulatorServiceClient.GetDefaultBinding(), EmulatorServiceClient.GetDefaultEndpointAddress())
         {
             this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_IEmulatorService.ToString();
@@ -26,6 +26,13 @@ namespace WarehouseService;
                 base(EmulatorServiceClient.GetBindingForEndpoint(endpointConfiguration), EmulatorServiceClient.GetEndpointAddress(endpointConfiguration))
         {
             this.Endpoint.Name = endpointConfiguration.ToString();
+            ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
+        }
+
+        public EmulatorServiceClient(string remoteAddress) : //USING THIS ONE
+                base(EmulatorServiceClient.GetDefaultBinding(), new System.ServiceModel.EndpointAddress(remoteAddress))
+        {
+            this.Endpoint.Name = EndpointConfiguration.BasicHttpBinding_IEmulatorService.ToString();
             ConfigureEndpoint(this.Endpoint, this.ClientCredentials);
         }
         
