@@ -19,9 +19,9 @@ var config = new ContainerConfiguration()
 
 using var container = config.CreateContainer();
 
-var components = container.GetExports<IMachineComponent>();
+var components = container.GetExports<MachineComponentBase>();
 
-builder.Services.AddSingleton<IEnumerable<IMachineComponent>>(components.ToList());
+builder.Services.AddSingleton<IEnumerable<MachineComponentBase>>(components.ToList());
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

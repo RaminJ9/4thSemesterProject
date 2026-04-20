@@ -29,31 +29,45 @@ namespace Core.Services
                 throw new ImpossibleProductionStateException(ProductionStates.Running, "Cannot start production in state: 'Running'");
             }
 
-            RunProductionLoop();
-
-            return true; // for now
-        }
-        public bool Stop()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RunProductionLoop()
-        {
-            /// This method maybe shouldnt exist
-            /// and should instead just be moved to driver
             cts = new();
             productionLoopTask = new Task(RunProductionLoop, cts.Token);
             productionLoopTask.Start();
 
             productionState = ProductionStates.Running;
-            
+            return true; // for now
+        }
+        public bool Stop()
+        {
+            cts.Cancel();
+            return true; // for now
+        }
+
+        private async void RunProductionLoop()
+        {
             while (!cts.IsCancellationRequested)
             {
 
                 try
                 {
-                    // The work :)
+                    Tray? tray = new(0, "Temp");
+                    for (int i = 0; i < production.Count; i++)
+                    {
+                        MachineComponentBase machine = production[i][0] // Add logic to hanlde multiple machine in each step
+                        ;
+                        
+                        if (tray == null)
+                        {
+                            throw new NotImplementedException("No null handling implemented");
+                        }
+
+
+                        // First machine in line shouldnt recieve any prior tray
+                        if (i != 0) await machine.Receive(tray);
+
+                        // Last machine shoulndt provide tray further
+                        if (i != machines.Count - 1) continue;
+                        tray = await machine.Provide(tray);
+                    }
                 } catch (Exception ex)
                 {
                     productionState = ProductionStates.Error;
