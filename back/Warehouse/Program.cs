@@ -1,4 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
+using Common.Models;
 using WarehouseService;
 
 namespace Warehouse;
@@ -12,8 +13,9 @@ public class Program
         {
 
             Warehouse wh = new Warehouse("1", "wh1", "http://localhost:8081/Service.asmx");
+            Tray tray = new Tray(0, "Parts");
 
-            var s = wh.GetConnection().GetService().GetInventoryAsync();
+            var s = wh.Provide(tray);
             Console.WriteLine(s);
         }
     }
