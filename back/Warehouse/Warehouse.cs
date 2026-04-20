@@ -27,14 +27,17 @@ namespace Warehouse
 
         public override async Task<Tray?> Provide(Tray tray) //Provides a tray of parts
         {
-            var jsonInv = await this.GetWarehouseInventory();
-            var trays = JsonSerializer.Deserialize<dynamic>(jsonInv);
-            
-            foreach(var t in trays)
+            var json = await this.GetWarehouseInventory();
+            var doc = JsonDocument.Parse(json);
+
+            // Get the inventory object (first element of the array)
+            var inventory = doc.RootElement.GetProperty("Inventory")[0];
+
+            // Iterate over tray slots
+            foreach (var item in inventory.EnumerateObject())
             {
-                Console.WriteLine(t);
+                Console.WriteLine($"Tray {item.Name}: {item.Value.GetString()}");
             }
-            return null;
             //GetConnection().GetService().PickItemAsync(tray_id);
         }
 
