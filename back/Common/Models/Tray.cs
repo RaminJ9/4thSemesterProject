@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Common.Models
 {
-    public class Tray(int id, string name)
+    public class Tray(int id, string name, string connectionString)
     {
         public int Id = id;
         public string Name = name;
+        public string ConnectionString = connectionString;
     }
 }
