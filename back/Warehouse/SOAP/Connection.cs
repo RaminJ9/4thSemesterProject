@@ -1,8 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using WarehouseService;
 
-namespace ST4_ImplementationExamples
+namespace WarehouseService
 {
     public class SOAP
     {

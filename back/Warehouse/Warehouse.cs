@@ -1,6 +1,7 @@
 ﻿using Common.Contracts;
 using Common.Models;
 using System.Composition;
+using WarehouseService;
 
 namespace Warehouse
 {
@@ -20,5 +21,9 @@ namespace Warehouse
         {
             throw new NotImplementedException();
         }
+        
+        
     }
+    
+    
 }
