@@ -55,6 +55,9 @@ namespace Warehouse
                         await this.GetConnection().GetService().PickItemAsync(returnTray.Id);
                         return returnTray;
                     }
+                    // When providing with the given method PickItemAsync, it only provides the parts, but since we disgussed it should provide a tray, 
+                    // we will provide it as a tray but the method doesnt do it like that.
+                    // So when we recieve a tray it will kinda merge, into one tray since there already was one. I think, not sure yet.
                     
                 }
             }
