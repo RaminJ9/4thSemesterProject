@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddSingleton<ProductionService>();
+builder.Services.AddSingleton<MachineService>();
 
 // Add services to the container.
 builder.Services.AddControllers();
