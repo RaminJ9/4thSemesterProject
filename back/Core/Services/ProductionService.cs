@@ -88,20 +88,5 @@ namespace Core.Services
             ProductionRepository.SetProduction(production);
         }
         public List<List<MachineComponentBase>> GetProduction() => ProductionRepository.Production;
-        public List<MachineComponentBase> GetMachines() => MachineRepository.Machines;
-
-        /// <exception cref="DuplicateMachineException">
-        /// Thrown when machine already exists.
-        /// </exception>
-        public void AddMachine(MachineComponentBase machine) => MachineRepository.AddMachine(machine);
-
-        /// <exception cref="MachineNotFoundException">
-        /// Thrown when machine to remove wasn't found.
-        /// </exception>
-        public void RemoveMachine(string guid)
-        {
-            // Todo: Cant remove machine when production running
-            MachineRepository.RemoveMachine(guid); // Not found error thrown in repo
-        }
     }
 }

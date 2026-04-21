@@ -8,71 +8,18 @@ using Microsoft.AspNetCore.Mvc;
 namespace Core.Controllers
 {
     [ApiController]
-    [Route("api/")]
+    [Route("api/production")]
     public class ProductionController : Controller
     {
         readonly ProductionService _productionService;
-        private readonly IEnumerable<Type> _components;
-        public ProductionController(ProductionService productionService, IEnumerable<Type> components)
+        readonly MachineService _machineService;
+        public ProductionController(ProductionService productionService, MachineService machineService)
         {
             _productionService = productionService;
-            _components = components;
+            _machineService = machineService;
         }
 
-        [HttpGet("machine")]
-        [ProducesResponseType(typeof(IEnumerable<GetMachineDto>), 200)]
-        public async Task<ActionResult<IEnumerable<GetMachineDto>>> GetMachine()
-        {
-            List<GetMachineDto> machines = GetMachineDto.FromMachine(_productionService.GetMachines());
-            return Ok(machines);
-        }
-
-        [HttpPost("machine")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(typeof(string) ,200)]
-        public async Task<ActionResult<string>> AddMachine([FromBody] PostMachineDto machineDto)
-        {
-            // Most of this logic should be moved to service, ideally
-            Type? type = _components.FirstOrDefault(t => t.ToString() == machineDto.Component);
-            if (type == null)
-            {
-                return NotFound($"Component type wasnt found.\nHas to be one of following:\n{string.Join(", ", _components)}");
-            }
-            var instance = (MachineComponentBase)Activator.CreateInstance(type, Guid.NewGuid().ToString(), machineDto.Name, machineDto.ConnectionString);
-            if (instance is not MachineComponentBase machine)
-            {
-                return BadRequest("Failed to create component instance");
-            }
-
-            try
-            {
-                _productionService.AddMachine(machine);
-            } catch (DuplicateMachineException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-
-            return Ok(instance.Guid);
-        }
-
-        [HttpDelete("machine/{machineGuid}")]
-        [ProducesResponseType(404)]
-        [ProducesResponseType(200)]
-        public async Task<IActionResult> DeleteMachine(string machineGuid)
-        {
-            try
-            {
-                _productionService.RemoveMachine(machineGuid);
-            } catch(MachineNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
-
-            return Ok();
-        }
-
-        [HttpGet("production")]
+        [HttpGet()]
         [ProducesResponseType(typeof(IEnumerable<IEnumerable<GetMachineDto>>), 200)]
         public async Task<ActionResult<IEnumerable<IEnumerable<GetMachineDto>>>> GetProduction()
         {
@@ -81,12 +28,12 @@ namespace Core.Controllers
             return Ok(production);
         }
 
-        [HttpPost("production")]
+        [HttpPost()]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
         public async Task<IActionResult> SetProduction([FromBody] IEnumerable<IEnumerable<string>> production)
         {
-            List<MachineComponentBase> machines = _productionService.GetMachines();
+            List<MachineComponentBase> machines = _machineService.GetMachines();
 
             // Translate strings to MachineComponentBase
             List<List<MachineComponentBase>> newProduction = production.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
@@ -104,7 +51,7 @@ namespace Core.Controllers
 
             return Ok();
         }
-        [HttpPost("production/state/{state}")]
+        [HttpPost("state/{state}")]
         [ProducesResponseType(400)]
         [ProducesResponseType(200)]
         public async Task<IActionResult> StartStopProduction(bool state)
@@ -123,11 +70,5 @@ namespace Core.Controllers
             return Ok();
         }
 
-        [HttpGet("components")]
-        [ProducesResponseType(typeof(string), 200)]
-        public async Task<ActionResult<string>> GetComponents()
-        {
-            return Ok(string.Join(", ", _components));
-        }
     }
 }
