@@ -84,7 +84,8 @@ namespace Core.Services
         /// </exception>
         public void SetProduction(List<List<MachineComponentBase>> production)
         {
-            // Todo: cant edit production while running
+            if (ProductionRepository.State == ProductionStates.Running)
+                throw new UnsafeOperationException("Cannot edit production whilst running");
             ProductionRepository.SetProduction(production);
         }
         public List<List<MachineComponentBase>> GetProduction() => ProductionRepository.Production;

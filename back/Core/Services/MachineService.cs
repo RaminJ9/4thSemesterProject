@@ -22,9 +22,9 @@ namespace Core.Services
         /// </exception>
         public void RemoveMachine(string guid)
         {
-            /// Todo: 
-            /// Cant remove machine when production running
-            /// Cant remove machine used in production
+            if (ProductionRepository.MachineExistsInProduction(guid))
+                throw new UnsafeOperationException($"Machine '{guid}' cannot be removed, since it is used in the production.\nRemove the machine from the production, before removing it entirely.");
+
             MachineRepository.RemoveMachine(guid); // Not found error thrown in repo
         }
     }
