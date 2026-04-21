@@ -72,6 +72,7 @@ namespace Core.Services
                 {
                     // Add some sort of error logging
                     ProductionRepository.State = ProductionStates.Error;
+                    cts.Cancel();
                 }
             }
         }
