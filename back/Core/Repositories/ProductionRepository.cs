@@ -10,8 +10,22 @@ namespace Core.Repositories
         public static List<List<MachineComponentBase>> Production { get; private set; } = new();
         private static HashSet<string> guids = new();
         public static int Count => Production.Count;
-        public static ProductionStates State { get; set; } = ProductionStates.Stopped; // private set in future?
+        private static readonly object _writeProductionLock = new object();
+        private static readonly object _writeStateLock = new object();
 
+        // private set in future?
+        private static ProductionStates state = ProductionStates.Stopped;
+        public static ProductionStates State
+        {
+            get => state;
+            set
+            {
+                lock(_writeStateLock)
+                {
+                    state = value;
+                }
+            }
+        }
         /// <exception cref="MachineNotFoundException">
         /// Thrown when one or more machines in production line wasn't found.
         /// </exception>
@@ -20,29 +34,32 @@ namespace Core.Repositories
         /// </exception>
         public static void SetProduction(List<List<MachineComponentBase>> production)
         {
-            HashSet<string> guids = new(); // will overwrite ProductionRepository.guids later
-
-            // Validate that all machines exist
-            foreach (List<MachineComponentBase> machinesList in production)
+            lock(_writeProductionLock)
             {
-                foreach (MachineComponentBase machine in machinesList)
+                HashSet<string> guids = new(); // will overwrite ProductionRepository.guids later
+
+                // Validate that all machines exist
+                foreach (List<MachineComponentBase> machinesList in production)
                 {
-                    guids.Add(machine.Guid);
-                    if (!MachineRepository.MachineExists(machine))
+                    foreach (MachineComponentBase machine in machinesList)
                     {
-                        throw new MachineNotFoundException(machine.Guid);
+                        guids.Add(machine.Guid);
+                        if (!MachineRepository.MachineExists(machine))
+                        {
+                            throw new MachineNotFoundException(machine.Guid);
+                        }
                     }
                 }
-            }
 
-            // Validate that at least two machines exist
-            if (guids.Count < 2)
-            {
-                throw new InvalidProductionException("Production must have at least two machines");
-            }
+                // Validate that at least two machines exist
+                if (guids.Count < 2)
+                {
+                    throw new InvalidProductionException("Production must have at least two machines");
+                }
 
-            ProductionRepository.guids = guids;
-            Production = production;
+                ProductionRepository.guids = guids;
+                Production = production;
+            }
         }
         public static bool MachineExistsInProduction(string guid) => guids.Contains(guid);
     }

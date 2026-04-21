@@ -7,14 +7,18 @@ namespace Core.Repositories
     public static class MachineRepository
     {
         public static List<MachineComponentBase> Machines { get; private set; } = new();
+        private static readonly object _writeMachineLock = new object();
 
         /// <exception cref="DuplicateMachineException">
         /// Thrown when machine already exists.
         /// </exception>
         public static void AddMachine(MachineComponentBase machine)
         {
-            if (MachineExists(machine)) throw new DuplicateMachineException(machine);
-            Machines.Add(machine);
+            lock (_writeMachineLock)
+            {
+                if (MachineExists(machine)) throw new DuplicateMachineException(machine);
+                Machines.Add(machine);
+            }
         }
 
         /// <exception cref="MachineNotFoundException">
@@ -22,9 +26,12 @@ namespace Core.Repositories
         /// </exception>
         public static void RemoveMachine(string guid)
         {
-            int index = Machines.FindIndex(m => m.Guid == guid);
-            if (index == -1) throw new MachineNotFoundException(guid); // -1 because FindIndex return -1 when not found
-            Machines.RemoveAt(index);
+            lock (_writeMachineLock)
+            {
+                int index = Machines.FindIndex(m => m.Guid == guid);
+                if (index == -1) throw new MachineNotFoundException(guid); // -1 because FindIndex return -1 when not found
+                Machines.RemoveAt(index);
+            }
         }
         /// <exception cref="MachineNotFoundException">
         /// Thrown when machine to remove wasn't found.
