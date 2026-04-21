@@ -30,8 +30,8 @@ namespace Core.Controllers
         [HttpPost("machine")]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        [ProducesResponseType(200)]
-        public async Task<IActionResult> AddMachine([FromBody] PostMachineDto machineDto)
+        [ProducesResponseType(typeof(string) ,200)]
+        public async Task<ActionResult<string>> AddMachine([FromBody] PostMachineDto machineDto)
         {
             // Most of this logic should be moved to service, ideally
             Type? type = _components.FirstOrDefault(t => t.ToString() == machineDto.Component);
@@ -53,7 +53,7 @@ namespace Core.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            return Ok(instance.Guid);
         }
 
         [HttpDelete("machine/{machineGuid}")]
