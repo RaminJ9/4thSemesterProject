@@ -23,7 +23,7 @@ namespace Core.Controllers
         [ProducesResponseType(typeof(IEnumerable<GetMachineDto>), 200)]
         public async Task<ActionResult<IEnumerable<GetMachineDto>>> GetMachine()
         {
-            var machines = GetMachineDto.FromMachine(_productionService.GetMachines());
+            List<GetMachineDto> machines = GetMachineDto.FromMachine(_productionService.GetMachines());
             return Ok(machines);
         }
 
@@ -33,7 +33,7 @@ namespace Core.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddMachine([FromBody] PostMachineDto machineDto)
         {
-            var type = _components.FirstOrDefault(t => t.ToString() == machineDto.Component);
+            Type? type = _components.FirstOrDefault(t => t.ToString() == machineDto.Component);
             if (type == null)
             {
                 return NotFound($"Component type wasnt found.\nHas to be one of following:\n{string.Join(", ", _components)}");
@@ -75,7 +75,7 @@ namespace Core.Controllers
         [ProducesResponseType(typeof(IEnumerable<IEnumerable<GetMachineDto>>), 200)]
         public async Task<ActionResult<IEnumerable<IEnumerable<GetMachineDto>>>> GetProduction()
         {
-            var production = _productionService.GetProduction().ConvertAll(l => GetMachineDto.FromMachine(l));
+            List<List<GetMachineDto>> production = _productionService.GetProduction().ConvertAll(l => GetMachineDto.FromMachine(l));
 
             return Ok(production);
         }
@@ -85,9 +85,9 @@ namespace Core.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> SetProduction([FromBody] IEnumerable<IEnumerable<string>> production)
         {
-            var machines = _productionService.GetMachines();
+            List<MachineComponentBase> machines = _productionService.GetMachines();
 
-            var newProduction = production.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
+            List<List<MachineComponentBase>> newProduction = production.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
             {
                 acc.Add(l.Aggregate(new List<MachineComponentBase>(), (ac, guid) =>
                 {
