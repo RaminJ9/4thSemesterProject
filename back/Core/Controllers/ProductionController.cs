@@ -33,6 +33,7 @@ namespace Core.Controllers
         [ProducesResponseType(200)]
         public async Task<IActionResult> AddMachine([FromBody] PostMachineDto machineDto)
         {
+            // Most of this logic should be moved to service, ideally
             Type? type = _components.FirstOrDefault(t => t.ToString() == machineDto.Component);
             if (type == null)
             {
@@ -87,6 +88,7 @@ namespace Core.Controllers
         {
             List<MachineComponentBase> machines = _productionService.GetMachines();
 
+            // Translate strings to MachineComponentBase
             List<List<MachineComponentBase>> newProduction = production.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
             {
                 acc.Add(l.Aggregate(new List<MachineComponentBase>(), (ac, guid) =>
@@ -96,13 +98,9 @@ namespace Core.Controllers
                 }));
                 return acc;
             });
-            try
-            {
-                _productionService.SetProduction(newProduction);
-            } catch(MachineNotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+            try{ _productionService.SetProduction(newProduction); } 
+            catch (MachineNotFoundException ex) { return NotFound(ex.Message); }
+            catch (InvalidProductionException ex) { return  BadRequest(ex.Message); }
 
             return Ok();
         }
@@ -116,9 +114,7 @@ namespace Core.Controllers
                 if (state)
                     _productionService.Start();
                 else
-                {
                     _productionService.Stop();
-                }
             } catch(Exception ex)
             {
                 return BadRequest(ex.Message);
