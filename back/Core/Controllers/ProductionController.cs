@@ -64,7 +64,7 @@ namespace Core.Controllers
             try
             {
                 _productionService.RemoveMachine(machineGuid);
-            } catch(Exception ex)
+            } catch(MachineNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
@@ -115,7 +115,7 @@ namespace Core.Controllers
                     _productionService.Start();
                 else
                     _productionService.Stop();
-            } catch(Exception ex)
+            } catch(ImpossibleProductionStateException ex)
             {
                 return BadRequest(ex.Message);
             }
