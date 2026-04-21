@@ -7,9 +7,7 @@ using System.Threading.Tasks;
 
 namespace Common.Contracts
 {
-    /// <summary>
-    /// Deprecated already?! probably??
-    /// </summary>
+
     public interface IMachineComponent
     {
         public Task<Tray?> Provide(Tray tray);
