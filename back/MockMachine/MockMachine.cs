@@ -1,6 +1,7 @@
 ﻿using Common.Contracts;
 using Common.Models;
 using System.Composition;
+using System.Diagnostics;
 
 namespace MockMachine
 {
@@ -13,6 +14,7 @@ namespace MockMachine
         {
             if (tray == null) return null;
             await Task.Delay(1000);
+            Debug.WriteLine($"{Name}: Providing");
             return tray;
         }
 
@@ -20,6 +22,7 @@ namespace MockMachine
         {
             await Task.Delay(500);
             this.tray = tray;
+            Debug.WriteLine($"{Name}: Receiving");
             return this.tray;
         }
     }
