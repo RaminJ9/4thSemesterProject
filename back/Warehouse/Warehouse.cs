@@ -69,9 +69,59 @@ namespace Warehouse
             throw new Exception($"No parts in Warehouse : {Guid}"); // if no parts in Warehare.
         }
 
-        public override Task<Tray?> Receive(Tray tray) //Ignore ID, use name to figure out if providing Drone or Parts
+        public override async Task<Tray?> Receive(Tray tray) //Ignore ID, use name to figure out if providing Drone or Parts
         {
-            throw new NotImplementedException();
+
+             var json = await this.GetWarehouseInventory();
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory");
+            }
+            var doc = JsonDocument.Parse(json);
+
+            
+            // Get the inventory object (first element of the array)
+            var inventory = doc.RootElement.GetProperty("Inventory");
+            
+            // Iterate over tray slots
+            try
+            {
+                Console.WriteLine(inventory.ToString());
+                if (inventory.GetArrayLength()==0)
+                {
+                    throw new Exception($"Warehouse: {Guid} Inventory is empty"); // If warehouse is empty.
+                }
+
+                int i = 1;
+                foreach (var item in inventory.EnumerateArray())
+                {
+                    Console.WriteLine(item);
+                    if (item.GetProperty("Content").ToString() == string.Empty) // this needs to be changed to parts, after testing.
+                    {
+                        await this.GetConnection().GetService().InsertItemAsync(i, tray.Name);
+                        return null;
+                    }
+                    i++;
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+             
+            throw new Exception($"No space in warehouse : {Guid}"); // if no parts in Warehare.
+            //Check the contents (tray name)
+            //Check amount of warehouse spaces in inventory
+            //Find the first empty spot
+                //If there are no empty spots throw an error
+            //Write the contents in that spot
+
+            
+            
+            
+
+            return null;
+
         }
         
         public Connection GetConnection()
@@ -85,6 +135,26 @@ namespace Warehouse
             return s.ToString();
         }
         
+
+        public async Task<int> GetWarehouseInventoryLength()
+        {
+            
+            var json = await this.GetWarehouseInventory();
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory length");
+            }
+            var doc = JsonDocument.Parse(json);
+
+            
+            // Get the inventory object (first element of the array)
+            var inventory = doc.RootElement.GetProperty("Inventory");
+
+            int inventory_length = inventory.GetArrayLength();
+            Console.WriteLine(inventory_length);
+
+            return inventory_length;
+        }
 
     }
     
