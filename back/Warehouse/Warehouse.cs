@@ -66,7 +66,7 @@ namespace Warehouse
                 Console.WriteLine(e);
             }
              
-            throw new Exception($"No parts in Warehouse : {Guid}"); // if no parts in Warehare.
+            throw new Exception($"No {tray.Name} in Warehouse : {Guid}"); // if no parts in Warehare.
         }
 
         public override async Task<Tray?> Receive(Tray tray) //Ignore ID, use name to figure out if providing Drone or Parts
