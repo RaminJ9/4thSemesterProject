@@ -27,26 +27,17 @@ namespace Warehouse
 
         public override async Task<Tray?> Provide(Tray tray) //Provides a tray of parts
         {
-            var json = await this.GetWarehouseInventory();
-            if (string.IsNullOrEmpty(json))
-            {
-                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory");
-            }
-            var doc = JsonDocument.Parse(json);
-
-            
-            // Get the inventory object (first element of the array)
-            var inventory = doc.RootElement.GetProperty("Inventory");
-            
             // Iterate over tray slots
             try
             {
+                var inventory = await GetInventoryForMethods();
+                
                 Console.WriteLine(inventory.ToString());
-                if (inventory.GetArrayLength()==0)
+                if (inventory.Value.GetArrayLength()==0)
                 {
                     throw new Exception($"Warehouse: {Guid} Inventory is empty"); // If warehouse is empty.
                 }
-                foreach (var item in inventory.EnumerateArray())
+                foreach (var item in inventory.Value.EnumerateArray())
                 {
                     Console.WriteLine(item);
                     if (item.GetProperty("Content").GetString().Contains(tray.Name)) // this needs to be changed to parts, after testing.
@@ -71,29 +62,19 @@ namespace Warehouse
 
         public override async Task<Tray?> Receive(Tray tray) //Ignore ID, use name to figure out if providing Drone or Parts
         {
-
-             var json = await this.GetWarehouseInventory();
-            if (string.IsNullOrEmpty(json))
-            {
-                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory");
-            }
-            var doc = JsonDocument.Parse(json);
-
-            
-            // Get the inventory object (first element of the array)
-            var inventory = doc.RootElement.GetProperty("Inventory");
+            var inventory = await this.GetInventoryForMethods();
             
             // Iterate over tray slots
             try
             {
                 Console.WriteLine(inventory.ToString());
-                if (inventory.GetArrayLength()==0)
+                if (inventory.Value.GetArrayLength()==0) // have to use .Value, so that it unwraps it, since its wrapped as a nullable contruct, using it takes the JsonElement alone.
                 {
                     throw new Exception($"Warehouse: {Guid} Inventory is empty"); // If warehouse is empty.
                 }
 
                 int i = 1;
-                foreach (var item in inventory.EnumerateArray())
+                foreach (var item in inventory.Value.EnumerateArray())
                 {
                     Console.WriteLine(item);
                     if (item.GetProperty("Content").ToString() == string.Empty) // this needs to be changed to parts, after testing.
@@ -115,13 +96,8 @@ namespace Warehouse
             //Find the first empty spot
                 //If there are no empty spots throw an error
             //Write the contents in that spot
-
             
-            
-            
-
             return null;
-
         }
         
         public Connection GetConnection()
@@ -138,22 +114,28 @@ namespace Warehouse
 
         public async Task<int> GetWarehouseInventoryLength()
         {
+            var inventory = await GetInventoryForMethods();
             
-            var json = await this.GetWarehouseInventory();
-            if (string.IsNullOrEmpty(json))
-            {
-                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory length");
-            }
-            var doc = JsonDocument.Parse(json);
-
-            
-            // Get the inventory object (first element of the array)
-            var inventory = doc.RootElement.GetProperty("Inventory");
-
-            int inventory_length = inventory.GetArrayLength();
+            if (inventory == null)
+                return 0;
+            int inventory_length = inventory.Value.GetArrayLength();
             Console.WriteLine(inventory_length);
 
             return inventory_length;
+        }
+
+        public async Task<JsonElement?> GetInventoryForMethods()
+        {
+            var json = await this.GetWarehouseInventory();
+            if (string.IsNullOrEmpty(json))
+            {
+                throw new Exception($"Unable to retrieve Warehouse: {Guid} inventory");
+            }
+            var doc = JsonDocument.Parse(json);
+            
+            // Get the inventory object (first element of the array)
+            var inventory = doc.RootElement.GetProperty("Inventory");
+            return inventory;
         }
 
     }
