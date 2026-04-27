@@ -7,11 +7,12 @@ using System.Runtime.CompilerServices;
 
 namespace Core.Services
 {
-    // Todo: locks
+    public delegate void ErrorEventHandler(Exception e);
     public class ProductionService
     {
         private Task? productionLoopTask;
         private CancellationTokenSource? cts;
+        public event ErrorEventHandler? OnMachineError;
 
         /// <exception cref="ImpossibleProductionStateException">
         /// Thrown when start of production was impossible
@@ -70,9 +71,10 @@ namespace Core.Services
                     await ProductionLoop();
                 } catch (Exception ex)
                 {
-                    // Add some sort of error logging
                     ProductionRepository.State = ProductionStates.Error;
                     cts.Cancel();
+                    if (OnMachineError != null)
+                        OnMachineError(ex);
                 }
             }
         }

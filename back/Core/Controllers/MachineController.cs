@@ -12,10 +12,12 @@ namespace Core.Controllers
     public class MachineController : Controller
     {
         readonly MachineService _machineService;
+        readonly ProductionService _productionService;
         private readonly IEnumerable<Type> _components;
-        public MachineController(MachineService machineService, IEnumerable<Type> components)
+        public MachineController(MachineService machineService, ProductionService productionService, IEnumerable<Type> components)
         {
             _machineService = machineService;
+            _productionService = productionService;
             _components = components;
         }
 
@@ -72,6 +74,43 @@ namespace Core.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpGet("errors")]
+        public async Task ErrorSSE(CancellationToken cancellationToken)
+        {
+            Response.ContentType = "text/event-stream";
+            Response.Headers.Append("Cache-Control", "no-cache");
+            Response.Headers.Append("X-Accel-Buffering", "no");
+
+            var tcs = new TaskCompletionSource<bool>();
+
+            // Actual method invoked on exception
+            async void SendUpdate(Exception e)
+            {
+                try
+                {
+                    await Response.WriteAsync($"data: {e.Message}\n\n", cancellationToken);
+                    await Response.Body.FlushAsync(cancellationToken);
+                }
+                catch
+                {
+                    tcs.TrySetResult(true); // close connection
+                }
+            }
+
+            _productionService.OnMachineError += SendUpdate;
+
+            // Keep connection alive until cancelled or error occurs
+            try
+            {
+                using var registration = cancellationToken.Register(() => tcs.TrySetResult(true));
+                await tcs.Task;
+            }
+            finally
+            {
+                _productionService.OnMachineError -= SendUpdate;
+            }
         }
     }
 }
