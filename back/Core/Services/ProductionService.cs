@@ -43,7 +43,7 @@ namespace Core.Services
                 /// First component in line must find tray based on name
                 /// instead of by Id.
                 /// (Ask Ramin, Freya or Joachim)
-                Tray? tray = new(-1, "Parts"); // Always take parts in beginning
+                Tray? tray = new(-1, "Item"); // Always take parts in beginning
                 for (int i = 0; i < ProductionRepository.Count; i++)
                 {
                     MachineComponentBase machine = ProductionRepository.Production[i][0]; // Add logic to hanlde multiple machine in each 
