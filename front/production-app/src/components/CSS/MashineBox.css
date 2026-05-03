@@ -1,0 +1,16 @@
+#Box {
+    display: flex;
+    flex-direction: column;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-radius: 1rem;
+    width: 80%;
+    max-width: 15rem;
+    /* justify-items: center; */
+    align-items: center;
+    background-color: gray;
+}
+
+#Box p {
+    margin: 0;
+}
