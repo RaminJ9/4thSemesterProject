@@ -4,7 +4,7 @@ namespace AGV
 {
     public class Program
     {
-        //**************** TEST ******************
+        //**************** TEST ************************
         //Delete this when we integrate with "common"
         public static async Task Main(string[] args)
         {
