@@ -162,16 +162,16 @@ namespace AGV
 
         private async Task ExecuteLoadedProgram()
         {
-            var payload = new Dictionary<string, object>
+            var program = new Dictionary<string, object>
             {
                 ["State"] = 2
             };
 
-            var response = await _httpClient.PutAsJsonAsync(_url, payload);
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var response = await _httpClient.PutAsJsonAsync(_url, program);
+            var resBody = await response.Content.ReadAsStringAsync();
 
             Console.WriteLine($"Execute status code: {(int)response.StatusCode}");
-            Console.WriteLine($"Execute response body: {responseBody}");
+            Console.WriteLine($"Execute response body: {resBody}");
 
             response.EnsureSuccessStatusCode();
         }
@@ -185,15 +185,15 @@ namespace AGV
         }
 
         //Got the problem "Already executing a task", so this methods makes sure the AGV is ready for a new task before getting a new one.
-        //It check if the AGV state=2 (state 2 means "Executing") if not then it returns. 
+        //It check if the AGV state=2 (state 2 means "Executing") if "state !=2" then it returns. 
         private async Task WaitUntilAgvReady()
         {
             while (true)
             {
                 var json = await GetStatus();
-                using var doc = JsonDocument.Parse(json);
+                using var j = JsonDocument.Parse(json);
 
-                int state = doc.RootElement.GetProperty("state").GetInt32();
+                int state = j.RootElement.GetProperty("state").GetInt32();
 
                 if (state != 2)
                     return;
