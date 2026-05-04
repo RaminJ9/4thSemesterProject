@@ -1,14 +1,14 @@
-import "./CSS/ProductionBox.css"
-import MachineBox from "./MachineBox";
+// import "./CSS/ProductionBox.css"
+// import MachineBox from "./MachineBox";
 
-function ProductionBox() {
-    return (
-        <div id="ProductionBox">
-            <MachineBox />
-            <MachineBox />
-            <button>+</button>
-        </div>
-    );
-}
+// function ProductionBox() {
+//     return (
+//         <div id="ProductionBox">
+//             <MachineBox />
+//             <MachineBox />
+//             <button>+</button>
+//         </div>
+//     );
+// }
 
-export default ProductionBox;
+// export default ProductionBox;
