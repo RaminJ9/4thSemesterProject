@@ -4,48 +4,53 @@ namespace AGV
 {
     public class Program
     {
-        //**************** TEST ************************
-        //Delete this when we integrate with "common"
         public static async Task Main(string[] args)
         {
-            AGV agv = new AGV("1", "agv1", "http://localhost:8082/v1/status/");
+            AGV agv = new AGV(
+                guid: "test-guid",
+                name: "TestAGV",
+                connectionString: "http://localhost:8082/v1/status/"
+            );
 
-            Tray partTray = new Tray(1, "Item");
-            Tray droneTray = new Tray(2, "Assembly");
+            //Test Get tatus
+            Console.WriteLine("Testing GetStatus");
+            var status = await agv.GetStatus();
+            Console.WriteLine($"Status: {status}");
 
-            Console.WriteLine("Initial status:");
-            Console.WriteLine(await agv.GetStatus());
+            //Test get battery
+            Console.WriteLine("\nTesting GetBattery");
+            var battery = await agv.GetBattery();
+            Console.WriteLine($"Battery: {battery}%");
 
-            Console.WriteLine("\nBattery:");
-            Console.WriteLine(await agv.GetBattery());
+            //Test Go to charger
+            Console.WriteLine("\nTesting GoToCharger");
+            await agv.GoToCharger();
+            Console.WriteLine("AGV sent to charger");
 
-            Console.WriteLine("\nTesting MoveToChargerOperation...");
-            await agv.TestProgram("MoveToChargerOperation");
-            Console.WriteLine(await agv.GetStatus());
-
-            Console.WriteLine("\nTesting MoveToStorageOperation...");
-            await agv.TestProgram("MoveToStorageOperation");
-            Console.WriteLine(await agv.GetStatus());
-
-            Console.WriteLine("\nTesting MoveToAssemblyOperation...");
-            await agv.TestProgram("MoveToAssemblyOperation");
-            Console.WriteLine(await agv.GetStatus());
-
-            Console.WriteLine("\nTesting Receive(part)...");
+            //Test receive with a part tray (name contains "item")
+            Console.WriteLine("\nTesting Receive (Part)");
+            var partTray = new Tray(1, "Item 1");
             await agv.Receive(partTray);
-            Console.WriteLine(await agv.GetStatus());
+            Console.WriteLine("Receive part done");
 
-            Console.WriteLine("\nTesting Provide(part)...");
-            await agv.Provide(partTray);
-            Console.WriteLine(await agv.GetStatus());
-
-            Console.WriteLine("\nTesting Receive(drone)...");
+            //Test receive with a drone tray
+            Console.WriteLine("\nTesting Receive (Drone)");
+            var droneTray = new Tray(2, "Assembly 1");
             await agv.Receive(droneTray);
-            Console.WriteLine(await agv.GetStatus());
+            Console.WriteLine("Receive drone done");
 
-            Console.WriteLine("\nTesting Provide(drone)...");
-            await agv.Provide(droneTray);
-            Console.WriteLine(await agv.GetStatus());
+            //Test provide with a part tray
+            Console.WriteLine("\nTesting Provide (Part)");
+            var partTray2 = new Tray(3, "Item 2");
+            await agv.Provide(partTray2);
+            Console.WriteLine("Provide part done");
+
+            //Test provide with a drone tray
+            Console.WriteLine("\nTesting Provide (Drone)");
+            var droneTray2 = new Tray(4, "Assembly 2");
+            await agv.Provide(droneTray2);
+            Console.WriteLine("Provide drone done");
+
         }
     }
 }
