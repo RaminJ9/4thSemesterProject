@@ -75,12 +75,12 @@ namespace AGV
         public async Task<int?> GetBattery()
         {
             var json = await GetStatus();
-            using var doc = JsonDocument.Parse(json);
+            using var j = JsonDocument.Parse(json);
 
-            if (doc.RootElement.TryGetProperty("battery", out var battery))
+            if (j.RootElement.TryGetProperty("battery", out var battery))
                 return battery.GetInt32();
 
-            if (doc.RootElement.TryGetProperty("Battery", out var batteryUpper))
+            if (j.RootElement.TryGetProperty("Battery", out var batteryUpper))
                 return batteryUpper.GetInt32();
 
             return null;
@@ -152,12 +152,6 @@ namespace AGV
             Console.WriteLine($"Response body: {responseBody}");
 
             response.EnsureSuccessStatusCode();
-        }
-
-        //For testing in Program.cs
-        public async Task TestProgram(string programName)
-        {
-            await RunProgram(programName);
         }
 
         private async Task ExecuteLoadedProgram()
