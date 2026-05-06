@@ -1,5 +1,6 @@
 using Common;
 using Common.Contracts;
+using Core.Repositories;
 using Core.Services;
 using System.Composition.Hosting;
 using System.Reflection;
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<ProductionService>();
 builder.Services.AddSingleton<MachineService>();
+builder.Services.AddSingleton<IMachineRepository, MachineRepository>();
+builder.Services.AddSingleton<IProductionRepository, ProductionRepository>();
 
 // Add services to the container.
 builder.Services.AddControllers();
