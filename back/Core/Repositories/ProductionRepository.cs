@@ -7,7 +7,11 @@ namespace Core.Repositories
 {
     public class ProductionRepository : IProductionRepository
     {
-        public ProductionRepository(){}
+        IMachineRepository _machineRepo;
+        public ProductionRepository(IMachineRepository machineRepository)
+        {
+            _machineRepo = machineRepository;
+        }
         public List<List<MachineComponentBase>> Production { get; private set; } = new();
         private HashSet<string> guids = new();
         public int Count => Production.Count;
@@ -39,7 +43,7 @@ namespace Core.Repositories
                     foreach (MachineComponentBase machine in machinesList)
                     {
                         guids.Add(machine.Guid);
-                        if (!MachineRepository.MachineExists(machine))
+                        if (!_machineRepo.MachineExists(machine))
                         {
                             throw new MachineNotFoundException(machine.Guid);
                         }
@@ -52,7 +56,7 @@ namespace Core.Repositories
                     throw new InvalidProductionException("Production must have at least two machines");
                 }
 
-                ProductionRepository.guids = guids;
+                this.guids = guids;
                 Production = production;
             }
         }
