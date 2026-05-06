@@ -4,15 +4,12 @@ using System.Reflection.PortableExecutable;
 
 namespace Core.Repositories
 {
-    public static class MachineRepository
+    public class MachineRepository : IMachineRepository
     {
-        public static List<MachineComponentBase> Machines { get; private set; } = new();
-        private static readonly object _writeMachineLock = new object();
-
-        /// <exception cref="DuplicateMachineException">
-        /// Thrown when machine already exists.
-        /// </exception>
-        public static void AddMachine(MachineComponentBase machine)
+        public MachineRepository(){}
+        public List<MachineComponentBase> Machines { get; private set; } = new();
+        private readonly object _writeMachineLock = new object();
+        public void AddMachine(MachineComponentBase machine)
         {
             lock (_writeMachineLock)
             {
@@ -20,11 +17,7 @@ namespace Core.Repositories
                 Machines.Add(machine);
             }
         }
-
-        /// <exception cref="MachineNotFoundException">
-        /// Thrown when machine to remove wasn't found.
-        /// </exception>
-        public static void RemoveMachine(string guid)
+        public void RemoveMachine(string guid)
         {
             lock (_writeMachineLock)
             {
@@ -33,12 +26,9 @@ namespace Core.Repositories
                 Machines.RemoveAt(index);
             }
         }
-        /// <exception cref="MachineNotFoundException">
-        /// Thrown when machine to remove wasn't found.
-        /// </exception>
-        public static void RemoveMachine(MachineComponentBase machine) => RemoveMachine(machine.Guid);
-        public static bool MachineExists(MachineComponentBase machine) => Machines.Any(m => m.Guid == machine.Guid || m.ConnectionString == machine.ConnectionString);
-        public static bool MachineExists(string guid) => Machines.Any(m => m.Guid == guid);
+        public void RemoveMachine(MachineComponentBase machine) => RemoveMachine(machine.Guid);
+        public bool MachineExists(MachineComponentBase machine) => Machines.Any(m => m.Guid == machine.Guid || m.ConnectionString == machine.ConnectionString);
+        public bool MachineExists(string guid) => Machines.Any(m => m.Guid == guid);
 
     }
 }
