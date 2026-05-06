@@ -35,7 +35,11 @@ namespace Core.Services
 
             _productionRepo.State = ProductionStates.Running;
         }
-        public void Stop() => cts?.Cancel(); // Dont care if cts exists. Production can always reach 'Stopped' state
+        public void Stop()
+        {
+            cts?.Cancel(); // Dont care if cts exists. Production can always reach 'Stopped' state
+            _productionRepo.State = ProductionStates.Stopped;
+        }
 
         /// <exception cref="Exception">
         /// Generic exception thrown when machine encounters errors
