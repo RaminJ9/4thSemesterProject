@@ -5,17 +5,18 @@ using System.Runtime.CompilerServices;
 
 namespace Core.Repositories
 {
-    public static class ProductionRepository
+    public class ProductionRepository : IProductionRepository
     {
-        public static List<List<MachineComponentBase>> Production { get; private set; } = new();
-        private static HashSet<string> guids = new();
-        public static int Count => Production.Count;
-        private static readonly object _writeProductionLock = new object();
-        private static readonly object _writeStateLock = new object();
+        public ProductionRepository(){}
+        public List<List<MachineComponentBase>> Production { get; private set; } = new();
+        private HashSet<string> guids = new();
+        public int Count => Production.Count;
+        private readonly object _writeProductionLock = new object();
+        private readonly object _writeStateLock = new object();
 
         // private set in future?
-        private static ProductionStates state = ProductionStates.Stopped;
-        public static ProductionStates State
+        private ProductionStates state = ProductionStates.Stopped;
+        public ProductionStates State
         {
             get => state;
             set
@@ -26,13 +27,7 @@ namespace Core.Repositories
                 }
             }
         }
-        /// <exception cref="MachineNotFoundException">
-        /// Thrown when one or more machines in production line wasn't found.
-        /// </exception>
-        /// /// <exception cref="InvalidProductionException">
-        /// Thrown when production line didn't have at least two machines.
-        /// </exception>
-        public static void SetProduction(List<List<MachineComponentBase>> production)
+        public void SetProduction(List<List<MachineComponentBase>> production)
         {
             lock(_writeProductionLock)
             {
@@ -61,6 +56,6 @@ namespace Core.Repositories
                 Production = production;
             }
         }
-        public static bool MachineExistsInProduction(string guid) => guids.Contains(guid);
+        public bool MachineExistsInProduction(string guid) => guids.Contains(guid);
     }
 }
