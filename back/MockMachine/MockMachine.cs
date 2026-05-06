@@ -12,8 +12,8 @@ namespace MockMachine
         private int delay;
         private int? errorAtProvideCycle;
         private int? errorAtReceiveCycle;
-        private int provideCycle = 1;
-        private int receiveCycle = 1; 
+        public int provideCycle = 1;
+        public int receiveCycle = 1; 
 
         /// The extra settings for MockMachine (in connectionString) follows this format:
         /// "delay;errorAtProvideCycle;errorAtReceiveCycle"
