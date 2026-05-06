@@ -4,6 +4,7 @@ using Core.Dtos;
 using Core.Exceptions;
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Core.Controllers
 {
@@ -21,9 +22,14 @@ namespace Core.Controllers
 
         [HttpGet()]
         [ProducesResponseType(typeof(IEnumerable<IEnumerable<GetMachineDto>>), 200)]
-        public async Task<ActionResult<IEnumerable<IEnumerable<GetMachineDto>>>> GetProduction()
+        public async Task<ActionResult<Dictionary<int, IEnumerable<GetMachineDto>>>> GetProduction()
         {
             List<List<GetMachineDto>> production = _productionService.GetProduction().ConvertAll(l => GetMachineDto.FromMachine(l));
+            var formattedProduction = production.Aggregate(new Dictionary<int, IEnumerable<GetMachineDto>>(), (acc, l) =>
+            {
+                acc.Add(acc.Count, l);
+                return acc;
+            });
 
             return Ok(production);
         }
@@ -31,12 +37,13 @@ namespace Core.Controllers
         [HttpPost()]
         [ProducesResponseType(404)]
         [ProducesResponseType(200)]
-        public async Task<IActionResult> SetProduction([FromBody] IEnumerable<IEnumerable<string>> production)
+        public async Task<IActionResult> SetProduction([FromBody] Dictionary<int, IEnumerable<string>> production)
         {
+            var formattedProduction = production.Values.ToList();
             List<MachineComponentBase> machines = _machineService.GetMachines();
 
             // Translate strings to MachineComponentBase
-            List<List<MachineComponentBase>> newProduction = production.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
+            List<List<MachineComponentBase>> newProduction = formattedProduction.Aggregate(new List<List<MachineComponentBase>>(), (acc, l) =>
             {
                 acc.Add(l.Aggregate(new List<MachineComponentBase>(), (ac, guid) =>
                 {
