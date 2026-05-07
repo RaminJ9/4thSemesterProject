@@ -1,0 +1,32 @@
+main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-height: 100vh;
+}
+
+#nav {
+    display: flex;
+    flex-direction: column;
+    min-width: 5rem;
+    background-color: aqua;
+}
+
+#nav a {
+    display: block;
+    width: 100%;
+}
+
+#nav button {
+    background-color: rgb(0,0,0,0);
+    width: 100%;
+    padding: 0.3rem;
+    border: none;
+}
+
+#nav button:hover {
+    background-color: red;
+}
+
+#info {
+    padding: 1rem;
+}

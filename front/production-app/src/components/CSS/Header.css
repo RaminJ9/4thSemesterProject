@@ -1,0 +1,22 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: blueviolet;
+    height: 3rem;
+}
+
+header a {
+    height: 100%;
+}
+
+header button {
+    background-color: rgb(0,0,0,0);
+    height: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border: none;
+}
+
+header button:hover {
+    background-color: red;
+}

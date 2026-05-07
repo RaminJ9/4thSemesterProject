@@ -1,7 +1,6 @@
 export interface machine {
-  id: number;
+  guid?: string;
   connectionString: string;
   name: string;
-  type: string;
-  attributes: string[];
+  component: string;
 }

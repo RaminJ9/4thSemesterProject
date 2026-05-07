@@ -4,8 +4,18 @@ using Core.Services;
 using System.Composition.Hosting;
 using System.Reflection;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
+// Allows the front end to send http requests -------------------------
+builder.Services.AddCors(options => {
+    options.AddDefaultPolicy(policy => {
+        policy.WithOrigins("http://localhost:5173")  // React port
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+// --------------------------------------------------------------------
 
 builder.Services.AddSingleton<ProductionService>();
 builder.Services.AddSingleton<MachineService>();
@@ -39,6 +49,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseCors();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

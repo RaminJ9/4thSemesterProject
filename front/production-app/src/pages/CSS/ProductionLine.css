@@ -1,3 +1,7 @@
+#production {
+    padding: 1rem;
+}
+
 #ProductionLine {
     display: flex;
 }
