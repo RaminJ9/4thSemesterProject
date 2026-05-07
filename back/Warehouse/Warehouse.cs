@@ -110,6 +110,14 @@ namespace Warehouse
             var s = await this.GetConnection().GetService().GetInventoryAsync();
             return s.ToString();
         }
+
+        public async Task<int> GetWarehouseStatus()
+        {
+            var s = await this.GetConnection().GetService().GetInventoryAsync();
+            var json = JsonSerializer.Deserialize<JsonElement>(s);
+            var state = json.GetProperty("State").GetInt32();
+            return state;
+        }
         
 
         public async Task<int> GetWarehouseInventoryLength()

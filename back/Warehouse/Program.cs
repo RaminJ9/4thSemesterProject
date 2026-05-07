@@ -20,6 +20,7 @@ public class Program
             
             var sd = await wh.GetWarehouseInventory();
             Console.WriteLine(sd);
+            var wasd = await wh.GetWarehouseStatus();
             
             
         }
