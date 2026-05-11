@@ -1,27 +1,47 @@
 import "./CSS/ProductionLine.css"
 import Header from "../components/Header";
-//import ProductionBox from "../components/ProductionBox";
 import MachineBox from "../components/MachineBox";
 
 import type { machine } from "../model/machine";
+import { useState } from "react";
 
 function Production() {
-  // Remove mock then impplementet:
-  // const { machines } = useProduction();
-  const 
-  
+  const [productionLine, setProductionLine] = useState<string[][]>([]);
+
   return (
     <>
       <Header />
+      <h1>Production Page</h1>
+
       <div id="production">
-        <h1>Production Page</h1>
-        <div id="ProductionLine">
-          <div id="ProductionBox">
-            <button>+</button>
-          </div>
-          <button>+</button>
-        </div>
-      </div>
+        { productionLine.length === 0 ?
+          <div className="ProductionIndex"></div>
+          :
+          productionLine.map( step =>
+            <div className="ProductionIndex">
+              <MachineBox name={step[0]} />
+
+              <button   
+                onClick={() => {
+                  setProductionLine(prev => [...prev, ["b"]]);
+                }}
+              >
+                +
+              </button>
+            </div>
+            
+          )
+        }
+
+    
+        <button   
+          onClick={() => {
+            setProductionLine(prev => [...prev, ["a"]]);
+          }}
+        >
+          +
+        </button>
+      </div>  
     </>
   );
 }

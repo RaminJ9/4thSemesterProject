@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import Info from "../pages/InfoPage";
 
 // Models
 import type { machine } from "../model/machine";
-import Info from "../pages/InfoPage";
 
 function useInfoPage() {
     const [components, setComponents] = useState<string[]>([]);

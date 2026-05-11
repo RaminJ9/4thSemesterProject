@@ -1,18 +1,17 @@
 import "./CSS/MashineBox.css"
 
-import type { machine } from "../model/machine";
+// import type { machine } from "../model/machine";
+
 
 type MachineBoxProps = {
-    machineInfo: machine;
+  name: string;
 };
 
-function MachineBox({ machineInfo }: MachineBoxProps) {
-
+function MachineBox({ name }: MachineBoxProps) {
 
     return (
         <div id="Box">
-            <p>{machineInfo.name}</p>
-            <p>{machineInfo.id}</p>
+            <p>{name}</p>
         </div>
     );
 }

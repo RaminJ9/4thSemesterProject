@@ -11,7 +11,8 @@ import type { machine } from "../model/machine";
 import Header from "../components/Header";
 
 // Style
-import "./CSS/Info.css"
+import "./CSS/InfoPage.css"
+
 function Info() {
   const navigate = useNavigate();
 
