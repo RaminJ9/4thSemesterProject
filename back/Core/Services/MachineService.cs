@@ -10,22 +10,29 @@ namespace Core.Services
     // Todo: locks
     public class MachineService
     {
-        public List<MachineComponentBase> GetMachines() => MachineRepository.Machines;
+        IMachineRepository _machineRepo;
+        IProductionRepository _productionRepo;
+        public MachineService(IMachineRepository machineRepository, IProductionRepository productionRepository)
+        {
+            _machineRepo = machineRepository;
+            _productionRepo = productionRepository;
+        }
+        public List<MachineComponentBase> GetMachines() => _machineRepo.Machines;
 
         /// <exception cref="DuplicateMachineException">
         /// Thrown when machine already exists.
         /// </exception>
-        public void AddMachine(MachineComponentBase machine) => MachineRepository.AddMachine(machine);
+        public void AddMachine(MachineComponentBase machine) => _machineRepo.AddMachine(machine);
 
         /// <exception cref="MachineNotFoundException">
         /// Thrown when machine to remove wasn't found.
         /// </exception>
         public void RemoveMachine(string guid)
         {
-            if (ProductionRepository.MachineExistsInProduction(guid))
+            if (_productionRepo.MachineExistsInProduction(guid))
                 throw new UnsafeOperationException($"Machine '{guid}' cannot be removed, since it is used in the production.\nRemove the machine from the production, before removing it entirely.");
 
-            MachineRepository.RemoveMachine(guid); // Not found error thrown in repo
+            _machineRepo.RemoveMachine(guid); // Not found error thrown in repo
         }
     }
 }

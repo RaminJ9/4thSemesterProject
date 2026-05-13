@@ -10,26 +10,36 @@ namespace Core.Services
     // Todo: locks
     public class ProductionService
     {
+        IProductionRepository _productionRepo;
         private Task? productionLoopTask;
         private CancellationTokenSource? cts;
+
+        public ProductionService(IProductionRepository productionRepo)
+        {
+            _productionRepo = productionRepo;
+        }
 
         /// <exception cref="ImpossibleProductionStateException">
         /// Thrown when start of production was impossible
         /// </exception>
         public void Start()
         {
-            if (ProductionRepository.State == ProductionStates.Error)
+            if (_productionRepo.State == ProductionStates.Error)
                 throw new ImpossibleProductionStateException(ProductionStates.Running, "Cannot start production in state: 'Error'");
-            if (ProductionRepository.State == ProductionStates.Running)
+            if (_productionRepo.State == ProductionStates.Running)
                 throw new ImpossibleProductionStateException(ProductionStates.Running, "Cannot start production in state: 'Running'");
 
             cts = new();
             productionLoopTask = new Task(RunProductionLoop, cts.Token);
             productionLoopTask.Start();
 
-            ProductionRepository.State = ProductionStates.Running;
+            _productionRepo.State = ProductionStates.Running;
         }
-        public void Stop() => cts?.Cancel(); // Dont care if cts exists. Production can always reach 'Stopped' state
+        public void Stop()
+        {
+            cts?.Cancel(); // Dont care if cts exists. Production can always reach 'Stopped' state
+            _productionRepo.State = ProductionStates.Stopped;
+        }
 
         /// <exception cref="Exception">
         /// Generic exception thrown when machine encounters errors
@@ -44,9 +54,9 @@ namespace Core.Services
                 /// instead of by Id.
                 /// (Ask Ramin, Freya or Joachim)
                 Tray? tray = new(-1, "Item"); // Always take parts in beginning
-                for (int i = 0; i < ProductionRepository.Count; i++)
+                for (int i = 0; i < _productionRepo.Count; i++)
                 {
-                    MachineComponentBase machine = ProductionRepository.Production[i][0]; // Add logic to hanlde multiple machine in each 
+                    MachineComponentBase machine = _productionRepo.Production[i][0]; // Add logic to hanlde multiple machine in each 
 
                     if (tray == null)
                     {
@@ -57,7 +67,7 @@ namespace Core.Services
                     if (i != 0) await machine.Receive(tray);
 
                     // Last machine shoulndt provide tray further
-                    if (i == ProductionRepository.Count - 1) continue;
+                    if (i == _productionRepo.Count - 1) continue;
                     tray = await machine.Provide(tray);
                 }
             }
@@ -71,7 +81,7 @@ namespace Core.Services
                 } catch (Exception ex)
                 {
                     // Add some sort of error logging
-                    ProductionRepository.State = ProductionStates.Error;
+                    _productionRepo.State = ProductionStates.Error;
                     cts.Cancel();
                 }
             }
@@ -85,10 +95,10 @@ namespace Core.Services
         /// </exception>
         public void SetProduction(List<List<MachineComponentBase>> production)
         {
-            if (ProductionRepository.State == ProductionStates.Running)
+            if (_productionRepo.State == ProductionStates.Running)
                 throw new UnsafeOperationException("Cannot edit production whilst running");
-            ProductionRepository.SetProduction(production);
+            _productionRepo.SetProduction(production);
         }
-        public List<List<MachineComponentBase>> GetProduction() => ProductionRepository.Production;
+        public List<List<MachineComponentBase>> GetProduction() => _productionRepo.Production;
     }
 }

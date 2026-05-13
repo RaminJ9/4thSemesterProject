@@ -4,6 +4,7 @@ using Core.Dtos;
 using Core.Exceptions;
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Core.Controllers
 {
@@ -23,9 +24,7 @@ namespace Core.Controllers
         [ProducesResponseType(typeof(IEnumerable<IEnumerable<GetMachineDto>>), 200)]
         public async Task<ActionResult<IEnumerable<IEnumerable<GetMachineDto>>>> GetProduction()
         {
-            List<List<GetMachineDto>> production = _productionService.GetProduction().ConvertAll(l => GetMachineDto.FromMachine(l));
-
-            return Ok(production);
+            return _productionService.GetProduction().ConvertAll(l => GetMachineDto.FromMachine(l));
         }
 
         [HttpPost()]
