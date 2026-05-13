@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MQTTnet" Version="5.1.0.1559" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.Composition" Version="10.0.6" />
   </ItemGroup>
@@ -14,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\MockMachine\MockMachine.csproj" />
+    <ProjectReference Include="..\AssemblyStation\AssemblyStation.csproj" />
   </ItemGroup>
 
 </Project>
