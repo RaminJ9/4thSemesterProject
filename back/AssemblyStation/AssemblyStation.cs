@@ -41,70 +41,70 @@ public class AssemblyStationComponent : MachineComponentBase
         var finished = new TaskCompletionSource<bool>();
 
         async Task Handler(MqttApplicationMessageReceivedEventArgs e)
+{
+    var topic = e.ApplicationMessage.Topic;
+    var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
+
+    Console.WriteLine($"[{Name}] {topic}: {payload}");
+
+    try
+    {
+        if (topic == StatusTopic)
         {
-            try
+            var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(payload);
+
+            if (status == null)
             {
-            var topic = e.ApplicationMessage.Topic;
-            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.PayloadSegment);
-
-            Console.WriteLine($"[{Name}] {topic}: {payload}");
-
-            if (topic == StatusTopic)
-            {
-                var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(payload);
-
-                if (status == null)
-                    return;
-
-                if (status.State == 0)
-                    finished.TrySetResult(true);
-
-                if (status.State == 2)
-                    finished.TrySetException(new Exception("Assembly station entered error state."));
-            }
-            } 
-            
-            catch (JsonException ex)
-            {
-                finished.TrySetException(
-                 new Exception("Could not parse assembly station status message.", ex)
-                );
+                finished.TrySetException(new Exception("Invalid status response."));
+                return;
             }
 
-            if (topic == CheckHealthTopic)
+            if (status.State == 0)
             {
-                try
-                {
-                    var health = JsonSerializer.Deserialize<HealthMessage>(
-                    payload,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-
-                if (health is null)
-                {
-                    finished.TrySetException(new Exception("Invalid health response."));
-                    return;
-                }
-
-                if (!health.Healthy || health.StatusCode == 9999)
-                {
-                    finished.TrySetException(
-                     new Exception($"Assembly station health check failed: {health.Message}")
-                    );
-                    return;
-                }
-
                 finished.TrySetResult(true);
+                return;
             }
-            catch (JsonException ex)
+
+            if (status.State == 2)
+            {
+                finished.TrySetException(new Exception("Assembly station entered error state."));
+                return;
+            }
+        }
+
+        if (topic == CheckHealthTopic)
+        {
+            var health = JsonSerializer.Deserialize<HealthMessage>(
+                payload,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+            );
+
+            if (health is null)
+            {
+                finished.TrySetException(new Exception("Invalid health response."));
+                return;
+            }
+
+            if (!health.Healthy || health.StatusCode == 9999)
             {
                 finished.TrySetException(
-                 new Exception("Could not parse assembly station health response.", ex)
+                    new Exception($"Assembly station health check failed: {health.Message}")
                 );
+                return;
             }
+
+            finished.TrySetResult(true);
         }
-            await Task.CompletedTask;
-        }
+    }
+    catch (JsonException ex)
+    {
+        finished.TrySetException(
+            new Exception($"Could not parse MQTT message from topic {topic}. Payload: {payload}", ex)
+        );
+    }
+
+    await Task.CompletedTask;
+}
 
         _client.ApplicationMessageReceivedAsync += Handler;
 
