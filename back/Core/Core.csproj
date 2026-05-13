@@ -13,9 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AGV\AGV.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
     <ProjectReference Include="..\MockMachine\MockMachine.csproj" />
     <ProjectReference Include="..\AssemblyStation\AssemblyStation.csproj" />
+    <ProjectReference Include="..\Warehouse\Warehouse.csproj" />
   </ItemGroup>
 
 </Project>
