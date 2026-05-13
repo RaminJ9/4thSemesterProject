@@ -40,7 +40,7 @@ namespace Warehouse
                 foreach (var item in inventory.Value.EnumerateArray())
                 {
                     Console.WriteLine(item);
-                    if (item.GetProperty("Content").GetString().Contains(tray.Name)) // this needs to be changed to parts, after testing.
+                    if (item.GetProperty("Content").GetString().Contains(tray.Name) && item.GetProperty("Content").GetString().Contains(tray.Name)) // this needs to be changed to parts, after testing.
                     {
                         Tray returnTray = new Tray(item.GetProperty("Id").GetInt32(), tray.Name);
                         await this.GetConnection().GetService().PickItemAsync(returnTray.Id);
