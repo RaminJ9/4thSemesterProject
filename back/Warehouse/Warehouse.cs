@@ -33,12 +33,11 @@ namespace Warehouse
                 var inventory = await GetInventoryForMethods();
                 
                 Console.WriteLine(inventory.ToString());
-                var items = inventory.Value.GetProperty("Inventory").EnumerateArray().ToList();
-                if (items.Count==0)
+                if (inventory.Value.GetArrayLength()==0)
                 {
                     throw new Exception($"Warehouse: {Guid} Inventory is empty"); // If warehouse is empty.
                 }
-                foreach (var item in items)
+                foreach (var item in inventory.Value.EnumerateArray())
                 {
                     Console.WriteLine(item);
                     if (item.GetProperty("Content").GetString().Contains(tray.Name) && !string.IsNullOrEmpty(item.GetProperty("Content").GetString())) // this needs to be changed to parts, after testing.
