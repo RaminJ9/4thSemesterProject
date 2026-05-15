@@ -22,6 +22,7 @@ public class AssemblyStationComponent : MachineComponentBase
         _client = new MqttFactory().CreateMqttClient();
     }
 
+
     public override async Task<Tray?> Receive(Tray tray)
     {
         await ExecuteAssemblyAsync(12345);
@@ -33,9 +34,6 @@ public class AssemblyStationComponent : MachineComponentBase
     {
         return Task.FromResult<Tray?>(tray);
     }
-
-// File: AssemblyStation.cs
-// Class: AssemblyStationComponent
 
 private static readonly TimeSpan MaxOperationTime = TimeSpan.FromSeconds(30);
 private static readonly TimeSpan MaxHealthTime = TimeSpan.FromSeconds(10);
@@ -58,11 +56,7 @@ private async Task ExecuteAssemblyAsync(int processId)
         {
             if (topic == StatusTopic)
             {
-                var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(
-                    payload,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-
+                var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(payload);
                 if (status == null)
                 {
                     operationFinished.TrySetException(
@@ -97,11 +91,7 @@ private async Task ExecuteAssemblyAsync(int processId)
 
             if (topic == CheckHealthTopic)
             {
-                var health = JsonSerializer.Deserialize<HealthMessage>(
-                    payload,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                );
-
+                var health = JsonSerializer.Deserialize<HealthMessage>(payload);
                 if (health == null)
                 {
                     healthChecked.TrySetException(
