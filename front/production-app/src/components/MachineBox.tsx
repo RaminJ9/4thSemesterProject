@@ -2,16 +2,21 @@ import "./CSS/MashineBox.css"
 
 // import type { machine } from "../model/machine";
 
+import useProductionPage from "../viewModel/useProductionPage";
+
 
 type MachineBoxProps = {
-  name: string;
+  guid: string;
 };
 
-function MachineBox({ name }: MachineBoxProps) {
-
+function MachineBox({ guid }: MachineBoxProps) {
+    const {machines} = useProductionPage();
+    const machine = machines.find(
+        machine => machine.guid === guid
+    )
     return (
         <div id="Box">
-            <p>{name}</p>
+            <p>{machine?.name}</p>
         </div>
     );
 }
