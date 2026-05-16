@@ -13,10 +13,11 @@ function Production() {
   const [selectedMachine, setSelectedMachine] = useState("");  
   
   useEffect(() => {
-  if (production) {
-    setProductionLine(production);
-  }
-}, [production]);
+    if (production) {
+      setProductionLine(production);
+    }
+  }, [production]);
+  
   return (  
     <>
       <Header />
