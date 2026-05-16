@@ -1,21 +1,51 @@
-main {
-    display: grid;
-    grid-template-columns: 1fr;
+#page {
+    display: flex;
+    flex-direction: column;
     padding: 1rem;
 }
 #production {
     display: flex;
     width: 100%;
     box-sizing: border-box;
+    height: 80vh;
 }
 
 .ProductionIndex {
-    border-style: solid;
+    outline: .5px solid black;;
     flex: 1;
-    justify-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     padding: 1rem;
+    width: 100%;
 }
 
 #ProductionLine {
     display: flex;
+}
+
+div.box {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+}
+
+div#action {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.action button {
+    width: 100%;
+}
+
+.action select {
+    width: 100%;
+}
+
+h3 {
+    margin-top: 0;
 }

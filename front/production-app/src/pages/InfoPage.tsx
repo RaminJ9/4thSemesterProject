@@ -86,6 +86,7 @@ function Info() {
                 className="action"
                 onClick={async () => {
                   await addMachine(makeMachine);
+                  window.location.reload();
                 }}
               >
                 Save

@@ -20,7 +20,7 @@ function Production() {
   return (  
     <>
       <Header />
-      <div>
+      <div id="page">
         <div id="production">
           { productionLine.length === 0 ?
 
@@ -31,14 +31,14 @@ function Production() {
               
               <div key={indexStep} className="ProductionIndex">
                 <div className="box">
-                  <p>{indexStep}</p>
+                  <h3>{indexStep}</h3>
 
-                  {productionLine[indexStep].map( line => 
-                    <MachineBox guid={line} />
+                  {productionLine[indexStep].map( guid => 
+                    <MachineBox guid={guid} />
                   )}
                 </div>
               
-                <div>
+                <div id="action">
                   <select
                     value={selectedMachine}
                     onChange={(e) => {
@@ -109,11 +109,6 @@ function Production() {
           Save
         </button>
       </div>
-
-
-
-      <p>{production}</p> 
-      <p>{productionLine}</p>
     </>
   );
 }

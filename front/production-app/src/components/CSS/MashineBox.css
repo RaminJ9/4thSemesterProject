@@ -9,6 +9,7 @@
     /* justify-items: center; */
     align-items: center;
     background-color: gray;
+    margin-bottom: 1rem;
 }
 
 #Box p {
