@@ -1,5 +1,9 @@
-#production {
+main {
+    display: grid;
+    grid-template-columns: 1fr;
     padding: 1rem;
+}
+#production {
     display: flex;
     width: 100%;
     box-sizing: border-box;
@@ -12,10 +16,6 @@
     padding: 1rem;
 }
 
-#ProductionBox {
-    padding: 1rem;
-    justify-items: center;
-    width: 100%;
-    border-style: solid;
-    border-color: red;
+#ProductionLine {
+    display: flex;
 }
