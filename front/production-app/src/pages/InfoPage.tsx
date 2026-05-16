@@ -47,10 +47,12 @@ function Info() {
               <p>{message}</p>
             </div>
           }
-          <h1>Info Page</h1>
+          
           {guid === undefined ?
-            <div>
-            
+            <div id="config">
+              <h1>Configure new machine</h1>
+              
+              <p>Name:</p>
               <input
                 type="text"
                 value={makeMachine.name}
@@ -61,6 +63,8 @@ function Info() {
                   })
                 }
               />
+
+              <p>Connectionstring:</p>
               <input
                 type="text"
                 value={makeMachine.connectionString}
@@ -99,7 +103,7 @@ function Info() {
             </div>
           :
             <div>
-              <p>{currentMaschine?.name}</p>
+              <h1>{currentMaschine?.name}</h1>
               <p>{currentMaschine?.connectionString}</p>
               <p>{currentMaschine?.guid}</p>
               <button className="action" onClick={async () => {

@@ -1,8 +1,9 @@
 header {
     display: flex;
     justify-content: space-between;
-    background-color: blueviolet;
+    background-color: rgb(150, 150, 150);
     height: 3rem;
+    box-shadow: 0 1pt 3pt rgb(174, 174, 174);  
 }
 
 header a {

@@ -7,8 +7,9 @@
     width: 80%;
     max-width: 15rem;
     align-items: center;
-    background-color: gray;
+    background-color: rgb(202, 202, 202);
     margin-bottom: 1rem;
+    box-shadow: 1pt 1pt 3pt rgb(174, 174, 174); 
 }
 
 #Box p {

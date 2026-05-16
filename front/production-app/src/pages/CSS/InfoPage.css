@@ -4,11 +4,42 @@ main {
     min-height: 100vh;
 }
 
+#config h1 {
+    margin-bottom: 1rem;
+}
+
+#config {
+    display: flex;
+    flex-direction: column;
+}
+
+#config input {
+    padding: .2rem;
+    margin-bottom: 1rem;
+    max-width: 30rem;
+}
+
+#config select {
+    padding: .2rem;
+    margin-bottom: 1rem;
+    max-width: 30.7rem;
+}
+
+#config button {
+    margin-bottom: 1rem;
+    max-width: 30.7rem;
+}
+
+#config p {
+    margin: 0;
+}
+
 #nav {
     display: flex;
     flex-direction: column;
     min-width: 5rem;
-    background-color: aqua;
+    background-color: rgb(150, 150, 150);
+    box-shadow: 1pt 0 3pt rgb(174, 174, 174);
 }
 
 #nav a {
