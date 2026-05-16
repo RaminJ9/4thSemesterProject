@@ -18,3 +18,20 @@ h1 {
   display: flex;
   justify-content: center;
 }
+
+.succes {
+  position: fixed;
+  z-index: 9999;
+  
+  width: 70vw;
+  max-width: 35rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: rgb(31, 136, 24);
+  border-radius: 1rem;
+
+  display: flex;
+  justify-content: center;
+}

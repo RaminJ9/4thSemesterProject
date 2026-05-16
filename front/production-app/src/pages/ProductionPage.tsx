@@ -9,8 +9,15 @@ function Production() {
   const { machines, production, saveProduction, message } = useProductionPage();
 
   const [productionLine, setProductionLine] = useState<string[][]>([]);
-
   const [selectedMachine, setSelectedMachine] = useState<string>("");  
+
+  const [succes, setSucces] = useState<string>("");
+  const showSucces = (text: string) => {
+      setSucces(text);
+      setTimeout(() => {
+      setSucces("");
+      }, 6000);
+  };
   
   useEffect(() => {
     if (production) {
@@ -25,6 +32,12 @@ function Production() {
         {message && // if message exist
           <div className="error">
             <p>{message}</p>
+          </div>
+        }
+
+        {succes &&
+          <div className="succes">
+            <p>{succes}</p>
           </div>
         }
 
@@ -110,6 +123,7 @@ function Production() {
         <button
           onClick={async () => {
             const result = await saveProduction(productionLine);
+            if (result) { showSucces("Pruduction saved") }
           }}
         >
           Save
