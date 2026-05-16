@@ -6,7 +6,6 @@
     border-radius: 1rem;
     width: 80%;
     max-width: 15rem;
-    /* justify-items: center; */
     align-items: center;
     background-color: gray;
     margin-bottom: 1rem;
@@ -14,4 +13,10 @@
 
 #Box p {
     margin: 0;
+}
+
+p#guid {
+    font-style: italic;
+    font-size: .5rem;
+    width: 80%;
 }

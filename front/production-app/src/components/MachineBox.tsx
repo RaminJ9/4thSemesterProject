@@ -17,6 +17,7 @@ function MachineBox({ guid }: MachineBoxProps) {
     return (
         <div id="Box">
             <p>{machine?.name}</p>
+            <p id="guid">{machine?.guid}</p>
         </div>
     );
 }

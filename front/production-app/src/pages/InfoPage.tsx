@@ -17,7 +17,7 @@ function Info() {
   const navigate = useNavigate();
 
   const { guid } = useParams();
-  const { components, machines, addMachine, removeMachine } = useInfoPage();
+  const { components, machines, addMachine, removeMachine, message } = useInfoPage();
 
   const [makeMachine, setMakeMachine] = useState<machine>({
     name: "",
@@ -42,6 +42,11 @@ function Info() {
         </div>
 
         <div id="info">
+          {message && // if message exist
+            <div className="error">
+              <p>{message}</p>
+            </div>
+          }
           <h1>Info Page</h1>
           {guid === undefined ?
             <div>
@@ -85,8 +90,8 @@ function Info() {
               <button
                 className="action"
                 onClick={async () => {
-                  await addMachine(makeMachine);
-                  window.location.reload();
+                  const result = await addMachine(makeMachine);
+                  if (result) { window.location.reload() }
                 }}
               >
                 Save

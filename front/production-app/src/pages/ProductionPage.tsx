@@ -6,11 +6,11 @@ import MachineBox from "../components/MachineBox";
 import useProductionPage from "../viewModel/useProductionPage";
 
 function Production() {
-  const { machines, production, saveProduction } = useProductionPage();
+  const { machines, production, saveProduction, message } = useProductionPage();
 
   const [productionLine, setProductionLine] = useState<string[][]>([]);
 
-  const [selectedMachine, setSelectedMachine] = useState("");  
+  const [selectedMachine, setSelectedMachine] = useState<string>("");  
   
   useEffect(() => {
     if (production) {
@@ -22,6 +22,12 @@ function Production() {
     <>
       <Header />
       <div id="page">
+        {message && // if message exist
+          <div className="error">
+            <p>{message}</p>
+          </div>
+        }
+
         <div id="production">
           { productionLine.length === 0 ?
 
@@ -103,13 +109,13 @@ function Production() {
         </div>
         <button
           onClick={async () => {
-            await saveProduction(productionLine);
-            window.location.reload();
+            const result = await saveProduction(productionLine);
           }}
         >
           Save
         </button>
       </div>
+     
     </>
   );
 }

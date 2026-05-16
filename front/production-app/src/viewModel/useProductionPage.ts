@@ -7,6 +7,14 @@ function useProductionPage() {
     const [machines, setMachines] = useState<machine[]>([]);
     const [production, setProduction] = useState<string[][]>([]);
 
+    const [message, setMessage] = useState<string>("");
+    const showMessage = (text: string) => {
+        setMessage(text);
+        setTimeout(() => {
+        setMessage("");
+        }, 6000);
+    };
+
     async function fetchMachines(): Promise<void> {
         const res = await fetch(`http://localhost:5253/api/machine`, {
             method: "GET"
@@ -30,13 +38,21 @@ function useProductionPage() {
         setProduction(guidOnly);
     }
 
-    async function saveProduction(productionLine: string[][]): Promise<void> {
+    async function saveProduction(productionLine: string[][]): Promise<boolean> {
         const res = await fetch("http://localhost:5253/api/production", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(productionLine)
         });
         console.log("Fetched:", res);
+        
+        const errorText = await res.text();
+        if (!res.ok) {
+            showMessage(errorText)
+            return false;
+        }
+        
+        return true
     }
 
     useEffect(() => {
@@ -44,7 +60,7 @@ function useProductionPage() {
         fetchProduction();
     }, []);
 
-    return { machines, production, saveProduction }
+    return { machines, production, saveProduction, message }
 }
 
 export default useProductionPage;
