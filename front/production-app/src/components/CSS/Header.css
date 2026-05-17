@@ -19,5 +19,5 @@ header button {
 }
 
 header button:hover {
-    background-color: red;
+    background-color: rgb(134, 134, 134);
 }

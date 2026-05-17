@@ -48,7 +48,6 @@ function Production() {
             :
             
             productionLine.map((indexInfo, indexStep) => (
-              
               <div key={indexStep} className="ProductionIndex">
                 <div className="box">
                   <h3>{indexStep}</h3>
@@ -74,7 +73,9 @@ function Production() {
                     }}
                   >
                     <option value="">+</option>
-                    {machines.map((machine) => (
+                    {machines
+                    .filter(machine => !indexInfo.includes(machine.guid))
+                    .map((machine) => (
                       <option
                         key={machine.guid}
                         value={machine.guid}
@@ -129,7 +130,7 @@ function Production() {
           Save
         </button>
       </div>
-     
+      
     </>
   );
 }

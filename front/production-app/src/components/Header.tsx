@@ -12,11 +12,13 @@ function Header() {
       <div id="left">
         <button
           onClick={ async () => {
-            await changeState();
-            await sendState();
+            const result = await sendState();
+            if(result){ await changeState(); }
           }}
         >
-          { state ? <p>Pause</p> : <p>Turn on</p>}
+          {/* { state ? <p>true</p> : <p>flase</p>} */}
+          { state ? <p>Turn on</p> : <p>Turn of</p>}
+
         </button>
       </div>
       <div id="right">

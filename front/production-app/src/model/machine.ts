@@ -1,5 +1,5 @@
 export interface machine {
-  guid?: string;
+  guid: string;
   connectionString: string;
   name: string;
   component: string;

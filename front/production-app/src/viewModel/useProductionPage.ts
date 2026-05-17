@@ -51,7 +51,6 @@ function useProductionPage() {
             showMessage(errorText)
             return false;
         }
-        
         return true
     }
 
