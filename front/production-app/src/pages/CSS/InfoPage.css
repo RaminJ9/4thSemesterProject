@@ -1,0 +1,63 @@
+main {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    min-height: 100vh;
+}
+
+#config h1 {
+    margin-bottom: 1rem;
+}
+
+#config {
+    display: flex;
+    flex-direction: column;
+}
+
+#config input {
+    padding: .2rem;
+    margin-bottom: 1rem;
+    max-width: 30rem;
+}
+
+#config select {
+    padding: .2rem;
+    margin-bottom: 1rem;
+    max-width: 30.7rem;
+}
+
+#config button {
+    margin-bottom: 1rem;
+    max-width: 30.7rem;
+}
+
+#config p {
+    margin: 0;
+}
+
+#nav {
+    display: flex;
+    flex-direction: column;
+    min-width: 5rem;
+    background-color: rgb(150, 150, 150);
+    box-shadow: 1pt 0 3pt rgb(174, 174, 174);
+}
+
+#nav a {
+    display: block;
+    width: 100%;
+}
+
+#nav button {
+    background-color: rgb(0,0,0,0);
+    width: 100%;
+    padding: 0.3rem;
+    border: none;
+}
+
+#nav button:hover {
+    background-color: rgb(134, 134, 134);
+}
+
+#info {
+    padding: 1rem;
+}

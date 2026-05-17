@@ -1,0 +1,23 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(150, 150, 150);
+    height: 3rem;
+    box-shadow: 0 1pt 3pt rgb(174, 174, 174);  
+}
+
+header a {
+    height: 100%;
+}
+
+header button {
+    background-color: rgb(0,0,0,0);
+    height: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border: none;
+}
+
+header button:hover {
+    background-color: rgb(134, 134, 134);
+}
