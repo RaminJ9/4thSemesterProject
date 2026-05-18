@@ -19,8 +19,64 @@ public class AssemblyStationComponent : MachineComponentBase
     public AssemblyStationComponent(string guid, string name, string connectionString)
         : base(guid, name, connectionString)
     {
-        _client = new MqttFactory().CreateMqttClient();
+        _client = new MqttFactory().CreateMqttClient();}
+
+        private static bool ParseHealthPayload(string payload)
+{
+    payload = payload.Trim();
+
+    // If the whole payload is sent as a JSON string, unwrap it.
+    // Example: "{'IsHealthy': true}"
+    if (payload.StartsWith("\"") && payload.EndsWith("\""))
+    {
+        try
+        {
+            var unwrapped = JsonSerializer.Deserialize<string>(payload);
+            if (!string.IsNullOrWhiteSpace(unwrapped))
+            {
+                payload = unwrapped.Trim();
+            }
+        }
+        catch
+        {
+            payload = payload.Trim('"');
+        }
     }
+
+    // If someone sends ("IsHealthy": true), convert it to JSON object style.
+    if (payload.StartsWith("(") && payload.EndsWith(")"))
+    {
+        payload = "{" + payload[1..^1] + "}";
+    }
+
+    // If someone sends {'IsHealthy': true}, convert single quotes to double quotes.
+    // This is only meant as a fallback for this simple health payload.
+    if (payload.Contains('\''))
+    {
+        payload = payload.Replace('\'', '"');
+    }
+
+    using var document = JsonDocument.Parse(payload);
+    var root = document.RootElement;
+
+    if (root.TryGetProperty("IsHealthy", out var value))
+        return value.GetBoolean();
+
+    if (root.TryGetProperty("isHealthy", out value))
+        return value.GetBoolean();
+
+    if (root.TryGetProperty("ishealthy", out value))
+        return value.GetBoolean();
+
+    if (root.TryGetProperty("Healthy", out value))
+        return value.GetBoolean();
+
+    if (root.TryGetProperty("healthy", out value))
+        return value.GetBoolean();
+
+    throw new JsonException($"Health payload did not contain IsHealthy/Healthy. Payload: {payload}");
+}
+    
 
 
     public override async Task<Tray?> Receive(Tray tray)
@@ -56,7 +112,7 @@ private async Task ExecuteAssemblyAsync(int processId)
         {
             if (topic == StatusTopic)
             {
-                var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(payload);
+                var status = JsonSerializer.Deserialize<AssemblyStatusMessage>(payload, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 if (status == null)
                 {
                     operationFinished.TrySetException(
@@ -90,26 +146,30 @@ private async Task ExecuteAssemblyAsync(int processId)
             }
 
             if (topic == CheckHealthTopic)
-            {
-                var health = JsonSerializer.Deserialize<HealthMessage>(payload);
-                if (health == null)
-                {
-                    healthChecked.TrySetException(
-                        new Exception("Invalid assembly health response.")
-                    );
-                    return;
-                }
+{
+    try
+    {
+        bool isHealthy = ParseHealthPayload(payload);
 
-                if (!health.Healthy || health.StatusCode == 9999)
-                {
-                    healthChecked.TrySetException(
-                        new Exception($"Assembly station health check failed: {health.Message}")
-                    );
-                    return;
-                }
+        if (!isHealthy)
+        {
+            healthChecked.TrySetException(
+                new Exception("Assembly station health check failed.")
+            );
+            return;
+        }
 
-                healthChecked.TrySetResult(true);
-            }
+        healthChecked.TrySetResult(true);
+        return;
+    }
+    catch (JsonException ex)
+    {
+        healthChecked.TrySetException(
+            new Exception($"Could not parse MQTT message from topic {topic}. Payload: {payload}", ex)
+        );
+        return;
+    }
+}
         }
         catch (JsonException ex)
         {
