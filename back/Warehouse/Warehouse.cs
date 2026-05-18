@@ -40,7 +40,8 @@ namespace Warehouse
                 foreach (var item in inventory.Value.EnumerateArray())
                 {
                     Console.WriteLine(item);
-                    if (item.GetProperty("Content").GetString().Contains(tray.Name) && !string.IsNullOrEmpty(item.GetProperty("Content").GetString())) // this needs to be changed to parts, after testing.
+                    var content = item.GetProperty("Content").GetString();
+                    if (!string.IsNullOrEmpty(content) && content.Contains(tray.Name)) // this needs to be changed to parts, after testing.
                     {
                         Tray returnTray = new Tray(item.GetProperty("Id").GetInt32(), tray.Name);
                         await this.GetConnection().GetService().PickItemAsync(returnTray.Id);
@@ -49,12 +50,12 @@ namespace Warehouse
                     // When providing with the given method PickItemAsync, it only provides the parts, but since we disgussed it should provide a tray, 
                     // we will provide it as a tray but the method doesnt do it like that.
                     // So when we recieve a tray it will kinda merge, into one tray since there already was one. I think, not sure yet.
-                    
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                throw;
             }
              
             throw new Exception($"No {tray.Name} in Warehouse : {Guid}"); // if no parts in Warehare.
