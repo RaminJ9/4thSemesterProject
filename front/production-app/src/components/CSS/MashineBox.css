@@ -1,0 +1,22 @@
+#Box {
+    display: flex;
+    flex-direction: column;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-radius: 1rem;
+    width: 80%;
+    max-width: 15rem;
+    align-items: center;
+    background-color: rgb(202, 202, 202);
+    margin-bottom: 1rem;
+    box-shadow: 1pt 1pt 3pt rgb(174, 174, 174); 
+}
+
+#Box p {
+    margin: 0;
+}
+
+p#guid {
+    font-style: italic;
+    font-size: .6rem;
+}
