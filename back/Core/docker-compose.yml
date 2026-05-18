@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mqtt: 
+    image: thmork/st4-mqtt:latest
+    ports:
+      - 1883:1883
+      - 9001:9001
+  
+  st4-agv:
+    image: thmork/st4-agv:latest
+    ports:
+      - 8082:80
+
+  st4-warehouse:
+    image: thmork/st4-warehouse:latest
+    ports:
+      - 8081:80
+
+  st4-assemblystation:
+    image: thmork/st4-assemblystation:latest
+    environment:
+      MQTT_TCP_CONNECTION_HOST: "mqtt"
+      MQTT_TCP_CONNECTION_PORT: 1883
