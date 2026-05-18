@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj" />
+    <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MQTTnet" Version="4.3.7.1207" />
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
 
 </Project>

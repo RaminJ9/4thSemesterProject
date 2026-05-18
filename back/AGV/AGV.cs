@@ -39,7 +39,7 @@ namespace AGV
                 await RunProgram("PutWarehouseOperation");
             }
 
-            return null;
+            return tray;
         }
 
         //Receive: AGV picks up from another machine
