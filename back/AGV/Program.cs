@@ -50,7 +50,6 @@ namespace AGV
             var droneTray2 = new Tray(4, "Assembly 2");
             await agv.Provide(droneTray2);
             Console.WriteLine("Provide drone done");
-
         }
     }
 }
