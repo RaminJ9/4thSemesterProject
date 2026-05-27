@@ -22,7 +22,10 @@ function useInfoPage() {
         });
         console.log("Fetched:", res);
         
-        setComponents([await res.text()]);
+        const componentString: string = await res.text()
+        const componentList: string[] = componentString.split(", ")
+        
+        setComponents(componentList);
     }
 
     async function fetchMachines(): Promise<void> {
@@ -43,9 +46,9 @@ function useInfoPage() {
         console.log("Fetched:", res);
         await fetchMachines();
         
-        // const errorText = await res.text(); // it sends a stupid errormessage
+        const errorText = await res.text(); // it sends a stupid errormessage
         if (!res.ok) {
-            showMessage("All feilds must be filled.");
+            showMessage(errorText);
             return false;
         }
         return true

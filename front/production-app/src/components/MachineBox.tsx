@@ -17,7 +17,7 @@ function MachineBox({ guid }: MachineBoxProps) {
     return (
         <div id="Box">
             <p>{machine?.name}</p>
-            <p id="guid">Compont</p>
+            <p id="guid">{machine?.component}</p>
         </div>
     );
 }

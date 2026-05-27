@@ -104,6 +104,7 @@ function Info() {
           :
             <div>
               <h1>{currentMaschine?.name}</h1>
+              <p>{currentMaschine?.component}</p>
               <p>{currentMaschine?.connectionString}</p>
               <p>{currentMaschine?.guid}</p>
               <button className="action" onClick={async () => {

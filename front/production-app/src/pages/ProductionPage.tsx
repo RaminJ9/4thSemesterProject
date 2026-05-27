@@ -11,6 +11,8 @@ function Production() {
   const [productionLine, setProductionLine] = useState<string[][]>([]);
   const [selectedMachine, setSelectedMachine] = useState<string>("");  
 
+  
+
   const [succes, setSucces] = useState<string>("");
   const showSucces = (text: string) => {
       setSucces(text);
@@ -72,9 +74,20 @@ function Production() {
                       setSelectedMachine("");
                     }}
                   >
+                    
                     <option value="">+</option>
                     {machines
                     .filter(machine => !indexInfo.includes(machine.guid))
+                    .filter(machine => {
+                      const firstMachine = machines.find(
+                        m => m.guid === indexInfo[0]
+                      );
+
+                      return (
+                        !firstMachine ||
+                        machine.component === firstMachine.component
+                      );
+                    })
                     .map((machine) => (
                       <option
                         key={machine.guid}
@@ -84,7 +97,6 @@ function Production() {
                       </option>
                     ))}
                   </select>
-                  
                   <button onClick={ () => {
                     setProductionLine(prev =>
                       prev.filter((_, i) => i !== indexStep)
